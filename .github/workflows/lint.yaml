@@ -1,11 +1,14 @@
-name: Lint
+name: Run linter
 
 on:
+  push:
+    branches:
+      - main
   pull_request:
 
 jobs:
   lint:
-    name: Lint using pre-commit & flake8
+    name: pre-commit & flake8
     runs-on: ubuntu-latest
     env:
       PIP_NO_CACHE_DIR: false
