@@ -60,8 +60,18 @@ jobs:
       - name: Run pre-commit hooks
         run: export PIP_USER=0; SKIP=flake8 pre-commit run --all-files
 
-      - name: Display contents of main.py
-        run: cat main.py
-
       - name: Run flake8
         run: "flake8 --format='::error file=%(path)s,line=%(row)d,col=%(col)d::**[flake8]** %(code)s: %(text)s'"
+
+      # We run `coverage` using the `python` command so we can suppress
+      # irrelevant warnings in our CI output.
+      - name: Run tests and generate coverage report
+        run: |
+            python -Wignore -m coverage run -m unittest discover -s tests/
+            coverage report -m
+      # This step will publish the coverage reports coveralls.io and
+      # print a "job" link in the output of the GitHub Action
+      - name: Publish coverage report to coveralls.io
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: coveralls
