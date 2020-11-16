@@ -61,4 +61,4 @@ jobs:
         run: cat main.py
 
       - name: Run flake8
-        run: "::error file=main.py,line=1,col=7::[E201] whitespace after '('"
+        run: echo "::error file=./main.py,line=1,col=7::[E201] whitespace after '('"
