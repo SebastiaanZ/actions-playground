@@ -3,7 +3,7 @@ name: Lint
 on:
   push:
     branches:
-      - master
+      - main
       - actions-test
   pull_request_target:
 
