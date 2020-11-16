@@ -1,0 +1,18 @@
+name: Build
+
+on:
+  workflow_run:
+    workflows: ["Run linter"]
+    branches: [main]
+    types:
+      - completed
+
+jobs:
+  build:
+    if: github.event.workflow_run.conclusion == 'success'
+    name: Build, Push, & Deploy Container
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Loud run!
+        run: echo "Hello! I've run!"
