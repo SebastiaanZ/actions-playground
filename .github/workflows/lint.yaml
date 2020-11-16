@@ -1,11 +1,7 @@
 name: Lint
 
 on:
-  push:
-    branches:
-      - main
-      - actions-test
-  pull_request_target:
+  pull_request:
 
 jobs:
   lint:
