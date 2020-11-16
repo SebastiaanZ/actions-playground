@@ -63,6 +63,7 @@ jobs:
       - name: Run flake8
         uses: julianwachholz/flake8-action@v1
         with:
-          checkName: lint
+          checkName: 'lint'
+          test: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
