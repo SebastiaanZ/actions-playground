@@ -61,8 +61,4 @@ jobs:
         run: cat main.py
 
       - name: Run flake8
-        uses: julianwachholz/flake8-action@v1
-        with:
-          checkName: lint
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: "::error file=main.py,line=1,col=7::[E201] whitespace after '('"
