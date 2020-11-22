@@ -72,4 +72,4 @@ jobs:
         uses: benc-uk/workflow-dispatch@v1
         with:
           workflow: Build
-          token: ${{ github.token }}
+          token: ${{ secrets.DISPATCH_TOKEN }}
