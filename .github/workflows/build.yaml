@@ -1,9 +1,16 @@
 name: Build
 
-on: workflow_dispatch
+on:
+  workflow_run:
+    workflows: ["Lint"]
+    branches:
+      - master
+    types:
+      - completed
 
 jobs:
   build:
+    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event != 'pull_request'
     name: Build, Push, & Deploy Container
     runs-on: ubuntu-latest
 
