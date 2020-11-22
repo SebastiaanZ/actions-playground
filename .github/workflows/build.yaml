@@ -1,11 +1,7 @@
 name: Build
 
 on:
-  workflow_run:
-    workflows: ["Run linter"]
-    branches: [main]
-    types:
-      - completed
+  on: workflow_dispatch
 
 jobs:
   build:
