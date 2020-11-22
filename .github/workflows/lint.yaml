@@ -68,7 +68,7 @@ jobs:
 
       - name: Trigger build & deployment
         if: ${{ github.event_name != 'pull_request' &&
-          github.ref == 'refs/heads/master' }}
+          github.ref == 'refs/heads/main' }}
         uses: benc-uk/workflow-dispatch@v1
         with:
           workflow: Build
