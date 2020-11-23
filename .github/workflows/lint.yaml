@@ -65,11 +65,3 @@ jobs:
 
       - name: Run flake8
         run: "flake8 --format='::error file=%(path)s,line=%(row)d,col=%(col)d::**[flake8]** %(code)s: %(text)s'"
-
-      - name: Trigger build & deployment
-        if: ${{ github.event_name != 'pull_request' &&
-          github.ref == 'refs/heads/main' }}
-        uses: benc-uk/workflow-dispatch@v1
-        with:
-          workflow: Build
-          token: ${{ secrets.DISPATCH_TOKEN }}
