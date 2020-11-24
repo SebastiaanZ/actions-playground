@@ -79,6 +79,7 @@ jobs:
 
       - name: Remove "waiting for core dev approval" if a core dev approved this PR
         if: steps.core_dev_reviews.outputs.approved == 'true'
+        continue-on-error: true
         uses: octokit/request-action@v2.x
         with:
           route: DELETE /repos/:repository/issues/:number/labels/:label
