@@ -2,7 +2,13 @@ name: Review Status
 
 on:
   pull_request_target:
-    types: ["labeled", "unlabeled"]
+    types:
+      - opened
+      - edited
+      - reopened
+      - synchronize
+      - labeled
+      - unlabeled
 
 jobs:
   waiting-for-core-dev:
