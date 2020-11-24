@@ -1,11 +1,14 @@
-name: Review Status
+name: Review Check
 
-on: [pull_request_review, pull_request_target]
+on:
+  pull_request_review:
+    types: ["submitted", "dismissed"]
+  pull_request_target:
 
 
 jobs:
   review-check:
-    name:  At least one core developer needs to approve this PR
+    name:  Checking for Core Dev Approvals
     runs-on: ubuntu-latest
 
     steps:

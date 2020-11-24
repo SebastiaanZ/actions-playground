@@ -1,0 +1,17 @@
+name: Review Status
+
+on:
+  pull_request_target:
+    events: ["labeled", "unlabeled"]
+
+jobs:
+  waiting-for-core-dev:
+    name: At least one core developer needs to approve this PR
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check for "waiting for core dev review" label
+        if: contains(github.event.pull_request.labels.*.name, 'waiting for core dev approval')
+        run: |
+          echo 'Approving Core Dev Review not found; failing check run...'
+          exit 1
