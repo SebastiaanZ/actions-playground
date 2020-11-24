@@ -77,7 +77,10 @@ jobs:
           print(f"::set-output name=approved::{approved}")
           '
 
-      - run: echo `contains(github.event.pull_request.labels.*.name, 'waiting for core dev approval')` }}'
+      - name: Echo condition
+        run: echo $RESULT
+        env: |
+          RESULT: ${{ contains(github.event.pull_request.labels.*.name, 'waiting for core dev approval') }}
 
       - name: Remove "waiting for core dev approval" if a core dev approved this PR
         if: >-
