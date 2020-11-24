@@ -24,8 +24,7 @@ jobs:
 
       - name: Echo existing checks
         run: |
-          echo '${{ toJson(steps.existing_checks.outputs.data) }}'
-          echo '${{ toJson(steps.existing_checks.outputs.data).total_count }}'
+          echo 'Total count: ${{ toJson(steps.existing_checks.outputs.data).total_count }}'
 
       - name: Register queued check run
         id: register_check
