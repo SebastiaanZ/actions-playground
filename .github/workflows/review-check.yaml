@@ -124,7 +124,7 @@ jobs:
 #          '
 
       - name: List existing checks
-        id: existing_checks
+        id: list_checks
         uses: octokit/request-action@v2.x
         with:
           route: GET /repos/:repository/commits/:ref/check-runs
@@ -135,7 +135,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Echo existing checks
-        run: echo '${{ steps.existing_checks.outputs.data }}'
+        run: echo '${{ steps.list_checks.outputs.data }}'
 
 #      - name: Register queued check
 #        if: steps.core_dev_acceptance.outputs.approval == 'false'
