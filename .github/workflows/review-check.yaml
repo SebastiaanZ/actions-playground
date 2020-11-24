@@ -26,16 +26,16 @@ jobs:
       - name: Echo existing checks
         run: echo '${{ steps.existing_checks.outputs.data }}'
 
-#      - name: Register queued check run
-#        uses: octokit/request-action@v2.x
-#        with:
-#          route: POST /repos/:owner/:repository/check-runs
-#          owner: ${{ github.repository.owner.login }}
-#          repository: ${{ github.repository }}
-#          name: At least one core developer needs to approve this PR
-#          status: queued
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Register queued check run
+        if: toJson(steps.existing_checks.outputs.data).total_count == 0
+        uses: octokit/request-action@v2.x
+        with:
+          route: POST /repos/:repository/check-runs
+          repository: ${{ github.repository }}
+          name: At least one core developer needs to approve this PR
+          status: queued
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 #  core-dev-check:
 #    if: github.event_name == 'pull_request_review'
