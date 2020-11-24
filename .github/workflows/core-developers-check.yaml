@@ -28,10 +28,13 @@ jobs:
                 }
               }
             }
-          owner: ${{ github.event.repository.owner.login }}
-          repository: ${{ github.event.repository.name }}
-          pr: ${{ github.event.pull_request.number }}
+          owner: 'python-discord'
+          repository: 'bot'
+          pr: 1269
+#          owner: ${{ github.event.repository.owner.login }}
+#          repository: ${{ github.event.repository.name }}
+#          pr: ${{ github.event.pull_request.number }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.DISPATCH_TOKEN }}
 
       - run: "echo 'latest release: ${{ steps.get_reviewers.outputs.data }}'"
