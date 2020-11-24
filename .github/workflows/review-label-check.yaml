@@ -3,8 +3,10 @@ name: Review Status
 on:
   pull_request_target:
     types:
+      - opened
       - edited
       - synchronize
+      - reopened
       - labeled
       - unlabeled
 
@@ -15,7 +17,9 @@ jobs:
 
     steps:
       - name: Check for "waiting for core dev review" label
-        if: contains(github.event.pull_request.labels.*.name, 'waiting for core dev approval')
+        if: >-
+          contains(github.event.pull_request.labels.*.name, 'waiting for core dev approval') ||
+          github.event.action == 'opened'
         run: |
           echo 'Approving Core Dev Review not found; failing check run...'
           exit 1
