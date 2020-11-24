@@ -126,7 +126,7 @@ jobs:
           run-id: ${{ env.CHECK_ID }}
           status: queued
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.DISPATCH_TOKEN }}
 
       - name: Change check to "completed" status
         if: steps.core_dev_reviews.outputs.approved == 'true'
@@ -138,4 +138,4 @@ jobs:
           status: completed
           conclusion: success
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.DISPATCH_TOKEN }}
