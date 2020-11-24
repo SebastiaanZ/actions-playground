@@ -1,0 +1,35 @@
+on:
+  pull_request_review:
+
+
+jobs:
+  core-dev-check:
+    name: At least one core developer needs to accept the PR
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: octokit/graphql-action@v2.x
+        id: get_reviewers
+        with:
+          query: |
+            query ($owner: String!, $repository: String!, $pr: Int!){
+              repository(owner: $owner, name: $repository) {
+                pullRequest(number: $pr) {
+                  latestOpinionatedReviews(last: 100, writersOnly: true) {
+                    nodes{
+                      author{
+                        login
+                      }
+                      state
+                    }
+                  }
+                }
+              }
+            }
+          owner: ${{ github.event.repository.owner.name }}
+          repo: ${{ github.event.repository.name }}
+          pr: ${{ github.event.pull_request.pull_number }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - run: "echo 'latest release: ${{ steps.get_reviewers.outputs.data }}'"
