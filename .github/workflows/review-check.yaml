@@ -32,9 +32,9 @@ jobs:
         with:
           route: POST /repos/:repository/check-runs
           repository: ${{ github.repository }}
+          head_sha: ${{ github.sha }}
           name: At least one core developer needs to approve this PR
           status: queued
-          head_sha: {{ github.sha }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
