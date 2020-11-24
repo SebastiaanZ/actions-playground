@@ -85,5 +85,5 @@ jobs:
         run: exit 1
 
       - name: Fail for PR Reviews
-        if: github.event_name == 'pull_request_review'
+        if: github.event_name == 'pull_request_target'
         run: exit 1
