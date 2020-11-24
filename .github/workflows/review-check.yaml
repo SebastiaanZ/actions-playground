@@ -78,10 +78,13 @@ jobs:
           print(f"::set-output name=approved::{approved}")
           '
 
-      - name: Fail workflow if no Core Developers have approved this PR
-        if: steps.core_dev_reviews.outputs.approved == 'false'
-        run: exit 1
-
-      - name: Fail for PR Reviews
-        if: github.event_name == 'pull_request_target'
-        run: exit 1
+      - name: Remove "waiting for core dev approval" if a core dev approved this PR
+        if: steps.core_dev_reviews.outputs.approved == 'true'
+        uses: octokit/request-action@v2.x
+        with:
+          route: DELETE /repos/:repository/issues/:number/labels/:label
+          repository: ${{ github.repository }}
+          number: ${{ github.event.pull_request.number }}
+          label: waiting for core dev approval
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
