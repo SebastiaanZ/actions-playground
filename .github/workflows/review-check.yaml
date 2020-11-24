@@ -7,7 +7,6 @@ on:
 
 jobs:
   review-check:
-    if: github.event_name == 'pull_request_target'
     name: Core Developers Review Check
     runs-on: ubuntu-latest
 
