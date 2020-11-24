@@ -78,11 +78,24 @@ jobs:
           '
 
       - name: Remove "waiting for core dev approval" if a core dev approved this PR
-        if: steps.core_dev_reviews.outputs.approved == 'true'
-        continue-on-error: true
+        if: >-
+          steps.core_dev_reviews.outputs.approved == 'true' &&
+          contains(github.event.pull_request.labels, 'waiting for core dev approval')
         uses: octokit/request-action@v2.x
         with:
           route: DELETE /repos/:repository/issues/:number/labels/:label
+          repository: ${{ github.repository }}
+          number: ${{ github.event.pull_request.number }}
+          label: waiting for core dev approval
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Remove "waiting for core dev approval" if a core dev approved this PR
+        if: steps.core_dev_reviews.outputs.approved == 'false'
+        continue-on-error: true
+        uses: octokit/request-action@v2.x
+        with:
+          route: POST /repos/:repository/issues/:number/labels/
           repository: ${{ github.repository }}
           number: ${{ github.event.pull_request.number }}
           label: waiting for core dev approval
