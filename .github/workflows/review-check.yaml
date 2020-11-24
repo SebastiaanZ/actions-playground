@@ -1,3 +1,5 @@
+name: Core Developer Requirement
+
 on:
   pull_request_review:
 
@@ -28,11 +30,8 @@ jobs:
                 }
               }
             }
-          repository: 'bot'
-          pr: 1285
-#          owner: ${{ github.event.repository.owner.login }}
-#          repository: ${{ github.event.repository.name }}
-#          pr: ${{ github.event.pull_request.number }}
+          owner: ${{ github.event.repository.owner.login }}
+          pr: ${{ github.event.pull_request.number }}
         env:
           GITHUB_TOKEN: ${{ secrets.DISPATCH_TOKEN }}
 
