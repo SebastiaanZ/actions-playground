@@ -126,16 +126,18 @@ jobs:
           run-id: ${{ env.CHECK_ID }}
           status: queued
         env:
-          GITHUB_TOKEN: ${{ secrets.DISPATCH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Change check to "completed" status
         if: steps.core_dev_reviews.outputs.approved == 'true'
+        id: check_completed
         uses: octokit/request-action@v2.x
         with:
-          route: PATCH /repos/:repository/check-runs/:run-id
+          route: PATCH /repos/:repository/check-runs/${{ env.CHECK_ID }}
           repository: ${{ github.repository }}
-          run-id: ${{ env.CHECK_ID }}
           status: completed
           conclusion: success
         env:
-          GITHUB_TOKEN: ${{ secrets.DISPATCH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - run: echo '${{ steps.check_completed.outputs.data }}'
