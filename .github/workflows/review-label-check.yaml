@@ -3,9 +3,7 @@ name: Review Status
 on:
   pull_request_target:
     types:
-      - opened
       - edited
-      - reopened
       - synchronize
       - labeled
       - unlabeled
