@@ -142,3 +142,15 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - run: echo '${{ steps.check_completed.outputs.data }}'
+
+      - name: Change check to "completed" status
+        id: list_check_suites
+        uses: octokit/request-action@v2.x
+        with:
+          route: GET /repos/:repository/commits/:head_sha/check-suites
+          repository: ${{ github.repository }}
+          head_sha: ${{ github.event.pull_request.head.ref }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - run: echo '${{ steps.list_check_suites.outputs.data }}'
