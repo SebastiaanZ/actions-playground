@@ -2,7 +2,7 @@ name: Review Status
 
 on:
   pull_request_target:
-    events: ["labeled", "unlabeled"]
+    types: ["labeled", "unlabeled"]
 
 jobs:
   waiting-for-core-dev:
