@@ -19,7 +19,6 @@ jobs:
           route: GET /repos/:repository/commits/:ref/check-runs
           repository: ${{ github.repository }}
           ref: ${{github.event.pull_request.head.ref}}
-          check_name: At least one core developer needs to approve this PR
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -37,6 +36,9 @@ jobs:
           status: queued
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Echo existing checks
+        run: echo '${{ steps.existing_checks.outputs.data }}'
 
   core-dev-check:
     if: github.event_name == 'pull_request_review'
@@ -64,8 +66,10 @@ jobs:
                 }
               }
             }
-          repository: ${{ github.event.repository.name }}
-          pr: ${{ github.event.pull_request.number }}
+          repository: bot
+          pr: 1202
+#          repository: ${{ github.event.repository.name }}
+#          pr: ${{ github.event.pull_request.number }}
         env:
           GITHUB_TOKEN: ${{ secrets.DISPATCH_TOKEN }}
 
@@ -130,27 +134,27 @@ jobs:
       - name: Echo existing checks
         run: echo '${{ steps.existing_checks.outputs.data }}'
 
-      - name: Register queued check
-        if: steps.core_dev_acceptance.outputs.approval == 'false'
-        uses: octokit/request-action@v2.x
-        with:
-          route: POST /repos/:owner/:repository/check-runs
-          owner: ${{ github.repository.owner.login }}
-          repository: ${{ github.repository }}
-          name: At least one core developer needs to approve this PR
-          status: queued
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Register accepted check
-        if: steps.core_dev_acceptance.outputs.approval == 'true'
-        uses: octokit/request-action@v2.x
-        with:
-          route: POST /repos/:owner/:repository/check-runs
-          owner: ${{ github.repository.owner.login }}
-          repository: ${{ github.repository }}
-          name: At least one core developer needs to approve this PR
-          status: completed
-          conclusion: success
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#      - name: Register queued check
+#        if: steps.core_dev_acceptance.outputs.approval == 'false'
+#        uses: octokit/request-action@v2.x
+#        with:
+#          route: POST /repos/:owner/:repository/check-runs
+#          owner: ${{ github.repository.owner.login }}
+#          repository: ${{ github.repository }}
+#          name: At least one core developer needs to approve this PR
+#          status: queued
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#
+#      - name: Register accepted check
+#        if: steps.core_dev_acceptance.outputs.approval == 'true'
+#        uses: octokit/request-action@v2.x
+#        with:
+#          route: POST /repos/:owner/:repository/check-runs
+#          owner: ${{ github.repository.owner.login }}
+#          repository: ${{ github.repository }}
+#          name: At least one core developer needs to approve this PR
+#          status: completed
+#          conclusion: success
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
