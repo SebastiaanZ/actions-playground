@@ -129,7 +129,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Change check to "completed" status
-        if: steps.core_dev_reviews.outputs.approved == 'true'
+        if: steps.core_dev_reviews.outputs.approved == 'true' && github.event_name != 'pull_request_review'
         id: check_completed
         uses: octokit/request-action@v2.x
         with:
