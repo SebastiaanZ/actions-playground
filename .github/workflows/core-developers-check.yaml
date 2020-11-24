@@ -52,7 +52,7 @@ jobs:
               }
             }
         env:
-          GITHUB_TOKEN: ${{ secrets.DISPATCH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.TEAM_TOKEN }}
 
       - name: Setup python
         id: python
