@@ -16,8 +16,7 @@ jobs:
         id: existing_checks
         uses: octokit/request-action@v2.x
         with:
-          route: GET /repos/:owner/:repository/commits/:ref/check-runs
-          owner: ${{ github.repository.owner.login }}
+          route: GET /repos/:repository/commits/:ref/check-runs
           repository: ${{ github.repository }}
           ref: ${{ github.sha }}
           check_name: At least one core developer needs to approve this PR
