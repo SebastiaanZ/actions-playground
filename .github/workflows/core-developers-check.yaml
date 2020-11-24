@@ -11,7 +11,7 @@ jobs:
       - run: cat $GITHUB_EVENT_PATH
 
       - uses: octokit/graphql-action@v2.x
-        id: reviews
+        id: reviewers
         with:
           query: |
             query ($repository: String!, $pr: Int!) {
