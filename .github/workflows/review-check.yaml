@@ -99,7 +99,7 @@ jobs:
           python-version: '3.9'
 
       - name: Check for Accepting Core Developers
-        id: core_dev_acceptance
+        id: core_dev_reviews
         run: |
           python -c 'import json
           reviews = json.loads("""${{ steps.reviews.outputs.data }}""")
@@ -113,12 +113,12 @@ jobs:
               member["login"] for member in core_devs["organization"]["team"]["members"]["nodes"]
           }
           approving_core_devs = reviewers & core_devs
-          approval = "true" if approving_core_devs else "false"
-          print(f"::set-output name=accepted::{approval}")
+          approved = "true" if approving_core_devs else "false"
+          print(f"::set-output name=approved::{approved}")
           '
 
       - name: Change check to "queued" status
-        if: steps.core_dev_acceptance.outputs.approval == 'false'
+        if: steps.core_dev_reviews.outputs.approved == 'false'
         uses: octokit/request-action@v2.x
         with:
           route: PATCH /repos/:repository/check-runs/:run-id
@@ -129,7 +129,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Change check to "completed" status
-        if: steps.core_dev_acceptance.outputs.approval == 'true'
+        if: steps.core_dev_reviews.outputs.approved == 'true'
         uses: octokit/request-action@v2.x
         with:
           route: PATCH /repos/:repository/check-runs/:run-id
