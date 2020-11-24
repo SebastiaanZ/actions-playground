@@ -7,3 +7,9 @@ on:
 
 
 jobs:
+  trigger-review-check:
+    name: Trigger review check
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: echo 'Triggering review check...'
