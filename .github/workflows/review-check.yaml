@@ -1,9 +1,11 @@
 name: Core Developer Requirement
 
 on:
-  pull_request_review:
-    types: [submitted, dismissed]
-  pull_request_target:
+  workflow_run:
+    workflows: ["Check Review Status"]
+    types:
+      - completed
+
 
 jobs:
   review-check:
@@ -81,4 +83,8 @@ jobs:
 
       - name: Fail workflow if no Core Developers have approved this PR
         if: steps.core_dev_reviews.outputs.approved == 'false'
+        run: exit 1
+
+      - name: Fail for PR Reviews
+        if: github.event_name == 'pull_request_review'
         run: exit 1

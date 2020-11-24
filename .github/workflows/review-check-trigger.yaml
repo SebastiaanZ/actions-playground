@@ -1,0 +1,9 @@
+Name: Check Review Status
+
+on:
+  pull_request_review:
+    types: [submitted, dismissed]
+  pull_request_target:
+
+
+jobs:
