@@ -11,7 +11,7 @@ jobs:
       - run: cat $GITHUB_EVENT_PATH
 
       - uses: octokit/graphql-action@v2.x
-        id: reviewers
+        id: reviews
         with:
           query: |
             query ($repository: String!, $pr: Int!) {
@@ -29,7 +29,7 @@ jobs:
               }
             }
           repository: 'bot'
-          pr: 1269
+          pr: 1202
 #          owner: ${{ github.event.repository.owner.login }}
 #          repository: ${{ github.event.repository.name }}
 #          pr: ${{ github.event.pull_request.number }}
@@ -61,12 +61,28 @@ jobs:
           python-version: '3.9'
 
       - run: |
-          echo '${{ steps.reviewers.outputs.data }}'
+          echo '${{ steps.reviews.outputs.data }}'
           echo '${{ steps.core_developers.outputs.data }}'
 
       - run: |
           python -c 'import json
-          reviewers = json.loads("""${{ steps.reviewers.outputs.data }}""")
+          reviews = json.loads("""${{ steps.reviews.outputs.data }}""")
+          reviewers = {
+              review["author"]["login"]
+              for review in reviews["repository"]["pullRequest"]["latestOpinionatedReviews"]["nodes"]
+              if review["state"] == "APPROVED"
+          }
           core_devs = json.loads("""${{ steps.core_developers.outputs.data }}""")
+          core_devs = {
+              member["login"] for member in core_devs["organization"]["team"]["members"]["nodes"]
+          }
           print(reviewers)
-          print(core_devs)'
+          print(core_devs)
+          approving_core_devs = reviewers & core_devs
+          print(approving_core_devs)
+          if not approving_core_devs:
+              print("No approving Core Developers were found.")
+              exit(1)
+          '
+
+
