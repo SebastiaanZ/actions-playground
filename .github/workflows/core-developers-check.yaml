@@ -14,7 +14,7 @@ jobs:
         id: get_reviewers
         with:
           query: |
-            ($owner: String!, $repository: String!, $pr: Int!) {
+            query ($owner: String!, $repository: String!, $pr: Int!) {
               repository(owner: $owner, name: $repository) {
                 pullRequest(number: $pr) {
                   latestOpinionatedReviews(last: 100, writersOnly: true) {
