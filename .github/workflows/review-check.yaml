@@ -7,51 +7,10 @@ on:
 
 jobs:
   review-check:
-    name: Core Developers Review Check
+    name:  At least one core developer needs to approve this PR
     runs-on: ubuntu-latest
 
     steps:
-      - name: List existing checks
-        id: existing_checks
-        uses: octokit/request-action@v2.x
-        with:
-          route: GET /repos/:repository/commits/:ref/check-runs
-          repository: ${{ github.repository }}
-          ref: ${{github.event.pull_request.head.ref}}
-          check_name: At least one core developer needs to approve this PR
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Set check ID environment variable
-        if: fromJson(steps.existing_checks.outputs.data).total_count > 0
-        run: |
-          echo "CHECK_ID=${{ fromJson(steps.existing_checks.outputs.data).check_runs[0].id }}" >> $GITHUB_ENV
-          echo "CHECK_STATE=${{ fromJson(steps.existing_checks.outputs.data).check_runs[0].status }}" >> $GITHUB_ENV
-          echo "SUITE_ID=${{ fromJson(steps.existing_checks.outputs.data).check_runs[0].check_suite.id }}" >> $GITHUB_ENV
-
-      - name: Register queued check run
-        id: register_check
-        if: fromJson(steps.existing_checks.outputs.data).total_count == 0
-        uses: octokit/request-action@v2.x
-        with:
-          route: POST /repos/:repository/check-runs
-          repository: ${{ github.repository }}
-          head_sha: ${{github.event.pull_request.head.ref}}
-          name: At least one core developer needs to approve this PR
-          status: queued
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Set check ID environment variable
-        if: fromJson(steps.existing_checks.outputs.data).total_count == 0
-        run: |
-          echo "CHECK_ID=${{ fromJson(steps.register_check.outputs.data).id }}" >> $GITHUB_ENV
-          echo "CHECK_STATE=${{ fromJson(steps.existing_checks.outputs.data).status }}" >> $GITHUB_ENV
-          echo "SUITE_ID=${{ fromJson(steps.register_check.outputs.data).check_suite.id }}" >> $GITHUB_ENV
-
-      - name: Echo return value
-        run: echo "Check ID ${{ env.CHECK_ID }}"
-
       - uses: octokit/graphql-action@v2.x
         id: reviews
         with:
@@ -120,40 +79,6 @@ jobs:
           print(f"::set-output name=approved::{approved}")
           '
 
-      - name: Change check to "queued" status
-        # if: steps.core_dev_reviews.outputs.approved == 'false'
-        if: github.event_name == 'pull_request_review' && env.CHECK_STATUS != 'queued'
-        uses: octokit/request-action@v2.x
-        with:
-          route: POST /repos/:repository/check-suites/:check_suite_id/rerequest
-          repository: ${{ github.repository }}
-          check_suite_id: ${{ env.SUITE_ID }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Change check to "completed" status
-        if: steps.core_dev_reviews.outputs.approved == 'true' && github.event_name != 'pull_request_review'
-        id: check_completed
-        uses: octokit/request-action@v2.x
-        with:
-          route: PATCH /repos/:repository/check-runs/:run_id
-          repository: ${{ github.repository }}
-          run_id: ${{ env.CHECK_ID }}
-          status: completed
-          conclusion: success
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - run: echo '${{ steps.check_completed.outputs.data }}'
-
-      - name: List Check Suites
-        id: list_check_suites
-        uses: octokit/request-action@v2.x
-        with:
-          route: GET /repos/:repository/commits/:head_sha/check-suites
-          repository: ${{ github.repository }}
-          head_sha: ${{ github.event.pull_request.head.ref }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - run: echo '${{ steps.list_check_suites.outputs.data }}'
+      - name: Fail workflow if no Core Developers have approved this PR
+        if: steps.core_dev_reviews.outputs.approved == "false"
+        run: exit 1
