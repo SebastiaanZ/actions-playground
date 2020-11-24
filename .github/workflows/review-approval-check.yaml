@@ -107,6 +107,7 @@ jobs:
           route: POST /repos/:repository/issues/:number/labels
           repository: ${{ github.repository }}
           number: ${{ github.event.pull_request.number }}
-          label: waiting for core dev approval
+          labels: |
+            - waiting for core dev approval
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
