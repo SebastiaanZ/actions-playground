@@ -117,12 +117,13 @@ jobs:
           '
 
       - name: Change check to "queued" status
-        if: steps.core_dev_reviews.outputs.approved == 'false'
+        # if: steps.core_dev_reviews.outputs.approved == 'false'
+        if: github.event_name == 'pull_request_review'
         uses: octokit/request-action@v2.x
         with:
-          route: PATCH /repos/:repository/check-runs/:run-id
+          route: PATCH /repos/:repository/check-runs/:run_id
           repository: ${{ github.repository }}
-          run-id: ${{ env.CHECK_ID }}
+          run_id: ${{ env.CHECK_ID }}
           status: queued
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -132,8 +133,9 @@ jobs:
         id: check_completed
         uses: octokit/request-action@v2.x
         with:
-          route: PATCH /repos/:repository/check-runs/${{ env.CHECK_ID }}
+          route: PATCH /repos/:repository/check-runs/:run_id
           repository: ${{ github.repository }}
+          run_id: ${{ env.CHECK_ID }}
           status: completed
           conclusion: success
         env:
