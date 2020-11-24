@@ -11,11 +11,11 @@ jobs:
       - run: cat $GITHUB_EVENT_PATH
 
       - uses: octokit/graphql-action@v2.x
-        id: get_reviewers
+        id: reviews
         with:
           query: |
-            query ($owner: String!, $repository: String!, $pr: Int!) {
-              repository(owner: $owner, name: $repository) {
+            query ($repository: String!, $pr: Int!) {
+              repository(owner: "python-discord", name: $repository) {
                 pullRequest(number: $pr) {
                   latestOpinionatedReviews(last: 100, writersOnly: true) {
                     nodes{
@@ -28,7 +28,6 @@ jobs:
                 }
               }
             }
-          owner: 'python-discord'
           repository: 'bot'
           pr: 1269
 #          owner: ${{ github.event.repository.owner.login }}
@@ -37,6 +36,33 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.DISPATCH_TOKEN }}
 
-      - run: >-
-        echo '${{ toJson(steps.get_reviewers.outputs.data).repository.latestOpinionatedReviews.nodes }}' |
-        jq '.[] | select(.state=="APPROVED")'
+      - uses: octokit/graphql-action@v2.x
+        id: core_developers
+        with:
+          query: |
+            query {
+              organization(login: "python-discord") {
+                team(slug: "core-developers") {
+                  members(first: 100) {
+                    nodes {
+                      login
+                    }
+                  }
+                }
+              }
+            }
+        env:
+          GITHUB_TOKEN: ${{ secrets.DISPATCH_TOKEN }}
+
+      - name: Setup python
+        id: python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+
+      - run: |
+        python -c 'import json
+        reviewers = json.loads({{ steps.reviewers.outputs.data }})
+        core_devs = json.loads({{ steps.core_developers.outputs.data }})
+        print(reviewers)
+        print(core_devs)'
