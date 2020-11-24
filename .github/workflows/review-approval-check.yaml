@@ -38,7 +38,7 @@ jobs:
               }
             }
           repository: bot
-          pr: 1202
+          pr: 1305
 #          repository: ${{ github.event.repository.name }}
 #          pr: ${{ github.event.pull_request.number }}
         env:
