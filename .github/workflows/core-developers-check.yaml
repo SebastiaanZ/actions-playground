@@ -62,7 +62,7 @@ jobs:
 
       - run: |
           python -c 'import json
-          reviewers = json.loads("${{ steps.reviewers.outputs.data }}")
-          core_devs = json.loads("${{ steps.core_developers.outputs.data }}")
+          reviewers = json.loads("""${{ steps.reviewers.outputs.data }}""")
+          core_devs = json.loads("""${{ steps.core_developers.outputs.data }}""")
           print(reviewers)
           print(core_devs)'
