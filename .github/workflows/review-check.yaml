@@ -1,13 +1,10 @@
 name: Review Status
 
-on:
-  pull_request_review:
-  pull_request_target:
+on: [pull_request_review, pull_request_target]
 
 
 jobs:
   review-check:
-    if: github.evant_name == 'pull_request_target'
     name:  At least one core developer needs to approve this PR
     runs-on: ubuntu-latest
 
