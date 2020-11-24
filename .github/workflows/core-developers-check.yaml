@@ -61,6 +61,10 @@ jobs:
           python-version: '3.9'
 
       - run: |
+          echo '${{ steps.reviewers.outputs.data }}'
+          echo '${{ steps.core_developers.outputs.data }}'
+
+      - run: |
           python -c 'import json
           reviewers = json.loads("""${{ steps.reviewers.outputs.data }}""")
           core_devs = json.loads("""${{ steps.core_developers.outputs.data }}""")
