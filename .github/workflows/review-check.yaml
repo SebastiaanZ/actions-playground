@@ -19,12 +19,14 @@ jobs:
           route: GET /repos/:repository/commits/:ref/check-runs
           repository: ${{ github.repository }}
           ref: ${{github.event.pull_request.head.ref}}
+          check_name: At least one core developer needs to approve this PR
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Echo existing checks
         run: |
           echo 'Total count: ${{ fromJson(steps.existing_checks.outputs.data).total_count }}'
+          echo '${{ steps.existing_checks.outputs.data }}'
 
       - name: Register queued check run
         id: register_check
