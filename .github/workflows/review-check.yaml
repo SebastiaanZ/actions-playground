@@ -6,9 +6,9 @@ on:
   pull_request_target:
 
 jobs:
-  register-check:
+  review-check:
     if: github.event_name == 'pull_request_target'
-    name: Register Core Developer Review Check
+    name: Core Developers Review Check
     runs-on: ubuntu-latest
 
     steps:
@@ -23,10 +23,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Echo existing checks
+      - name: Set check ID environment variable
+        if: fromJson(steps.existing_checks.outputs.data).total_count > 0
         run: |
-          echo 'Total count: ${{ fromJson(steps.existing_checks.outputs.data).total_count }}'
-          echo '${{ steps.existing_checks.outputs.data }}'
+          echo "CHECK_ID=${{ fromJson(steps.existing_checks.outputs.data).check_runs[0].id }}}" >> $GITHUB_ENV
 
       - name: Register queued check run
         id: register_check
@@ -41,14 +41,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Set check ID environment variable
+        if: fromJson(steps.existing_checks.outputs.data).total_count == 0
+        run: |
+          echo "CHECK_ID=${{ fromJson(steps.register_check.outputs.data).id }}}" >> $GITHUB_ENV
+
       - name: Echo return value
-        run: echo '${{ steps.register_check.outputs.data }}'
+        run: echo "Check ID ${{ env.CHECK_ID }}"
 
-  core-dev-check:
-    name: Check for Core Dev Reviews
-    runs-on: ubuntu-latest
-
-    steps:
 #      - run: cat $GITHUB_EVENT_PATH
 #
 #      - uses: octokit/graphql-action@v2.x
