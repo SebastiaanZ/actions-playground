@@ -26,6 +26,8 @@ jobs:
         if: fromJson(steps.existing_checks.outputs.data).total_count > 0
         run: |
           echo "CHECK_ID=${{ fromJson(steps.existing_checks.outputs.data).check_runs[0].id }}" >> $GITHUB_ENV
+          echo "CHECK_STATE=${{ fromJson(steps.existing_checks.outputs.data).check_runs[0].status }}" >> $GITHUB_ENV
+          echo "SUITE_ID=${{ fromJson(steps.existing_checks.outputs.data).check_runs[0].check_suite.id }}" >> $GITHUB_ENV
 
       - name: Register queued check run
         id: register_check
@@ -44,6 +46,8 @@ jobs:
         if: fromJson(steps.existing_checks.outputs.data).total_count == 0
         run: |
           echo "CHECK_ID=${{ fromJson(steps.register_check.outputs.data).id }}" >> $GITHUB_ENV
+          echo "CHECK_STATE=${{ fromJson(steps.existing_checks.outputs.data).status }}" >> $GITHUB_ENV
+          echo "SUITE_ID=${{ fromJson(steps.register_check.outputs.data).check_suite.id }}" >> $GITHUB_ENV
 
       - name: Echo return value
         run: echo "Check ID ${{ env.CHECK_ID }}"
@@ -118,13 +122,12 @@ jobs:
 
       - name: Change check to "queued" status
         # if: steps.core_dev_reviews.outputs.approved == 'false'
-        if: github.event_name == 'pull_request_review'
+        if: github.event_name == 'pull_request_review' && env.CHECK_STATUS != "queued"
         uses: octokit/request-action@v2.x
         with:
-          route: PATCH /repos/:repository/check-runs/:run_id
+          route: POST /repos/:repository/check-suites/:check_suite_id/rerequest
           repository: ${{ github.repository }}
-          run_id: ${{ env.CHECK_ID }}
-          status: queued
+          check_suite_id: ${{ env.SUITE_ID }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
