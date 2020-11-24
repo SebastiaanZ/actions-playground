@@ -18,7 +18,7 @@ jobs:
         with:
           route: GET /repos/:repository/commits/:ref/check-runs
           repository: ${{ github.repository }}
-          ref: ${{ github.sha }}
+          ref: ${{github.event.pull_request.head.ref}}
           check_name: At least one core developer needs to approve this PR
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -32,7 +32,7 @@ jobs:
         with:
           route: POST /repos/:repository/check-runs
           repository: ${{ github.repository }}
-          head_sha: ${{ github.sha }}
+          head_sha: ${{github.event.pull_request.head.ref}}
           name: At least one core developer needs to approve this PR
           status: queued
         env:
