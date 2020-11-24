@@ -122,7 +122,7 @@ jobs:
 
       - name: Change check to "queued" status
         # if: steps.core_dev_reviews.outputs.approved == 'false'
-        if: github.event_name == 'pull_request_review' && env.CHECK_STATUS != "queued"
+        if: github.event_name == 'pull_request_review' && env.CHECK_STATUS != 'queued'
         uses: octokit/request-action@v2.x
         with:
           route: POST /repos/:repository/check-suites/:check_suite_id/rerequest
