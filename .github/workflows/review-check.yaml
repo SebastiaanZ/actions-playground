@@ -1,10 +1,9 @@
-name: Core Developer Requirement
+name: Review Status
 
 on:
-  workflow_run:
-    workflows: ["Check Review Status"]
-    types:
-      - completed
+  pull_request_review:
+    types: [submitted, dismissed]
+  pull_request_target:
 
 
 jobs:
