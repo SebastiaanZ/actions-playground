@@ -61,8 +61,8 @@ jobs:
           python-version: '3.9'
 
       - run: |
-        python -c 'import json
-        reviewers = json.loads({{ steps.reviewers.outputs.data }})
-        core_devs = json.loads({{ steps.core_developers.outputs.data }})
-        print(reviewers)
-        print(core_devs)'
+          python -c 'import json
+          reviewers = json.loads({{ steps.reviewers.outputs.data }})
+          core_devs = json.loads({{ steps.core_developers.outputs.data }})
+          print(reviewers)
+          print(core_devs)'
