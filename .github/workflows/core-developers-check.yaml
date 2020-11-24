@@ -26,9 +26,9 @@ jobs:
                 }
               }
             }
-          owner: ${{ github.event.repository.owner.name }}
-          $repository: ${{ github.event.repository.name }}
-          pr: ${{ github.event.pull_request.pull_number }}
+          owner: ${{ github.event.pull_request_review.repository.owner.name }}
+          repository: ${{ github.event.repository.name }}
+          pr: ${{ github.event.pull_request_review.pull_number }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
