@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: List for existing checks
+      - name: List existing checks
         id: existing_checks
         uses: octokit/request-action@v2.x
         with:
@@ -45,84 +45,83 @@ jobs:
         run: echo '${{ steps.register_check.outputs.data }}'
 
   core-dev-check:
-    if: github.event_name == 'pull_request_review'
-    name: At least one core developer needs to accept the PR
+    name: Check for Core Dev Reviews
     runs-on: ubuntu-latest
 
     steps:
-      - run: cat $GITHUB_EVENT_PATH
-
-      - uses: octokit/graphql-action@v2.x
-        id: reviews
-        with:
-          query: |
-            query ($repository: String!, $pr: Int!) {
-              repository(owner: "python-discord", name: $repository) {
-                pullRequest(number: $pr) {
-                  latestOpinionatedReviews(last: 100, writersOnly: true) {
-                    nodes{
-                      author{
-                        login
-                      }
-                      state
-                    }
-                  }
-                }
-              }
-            }
-          repository: bot
-          pr: 1202
-#          repository: ${{ github.event.repository.name }}
-#          pr: ${{ github.event.pull_request.number }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.DISPATCH_TOKEN }}
-
-      - uses: octokit/graphql-action@v2.x
-        id: core_developers
-        with:
-          query: |
-            query {
-              organization(login: "python-discord") {
-                team(slug: "core-developers") {
-                  members(first: 100) {
-                    nodes {
-                      login
-                    }
-                  }
-                }
-              }
-            }
-        env:
-          GITHUB_TOKEN: ${{ secrets.TEAM_TOKEN }}
-
-      - name: Setup python
-        id: python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.9'
-
-      - run: |
-          echo '${{ steps.reviews.outputs.data }}'
-          echo '${{ steps.core_developers.outputs.data }}'
-
-      - name: Check for Accepting Core Developers
-        id: core_dev_acceptance
-        run: |
-          python -c 'import json
-          reviews = json.loads("""${{ steps.reviews.outputs.data }}""")
-          reviewers = {
-              review["author"]["login"]
-              for review in reviews["repository"]["pullRequest"]["latestOpinionatedReviews"]["nodes"]
-              if review["state"] == "APPROVED"
-          }
-          core_devs = json.loads("""${{ steps.core_developers.outputs.data }}""")
-          core_devs = {
-              member["login"] for member in core_devs["organization"]["team"]["members"]["nodes"]
-          }
-          approving_core_devs = reviewers & core_devs
-          approval = "true" if approving_core_devs else "false"
-          print(f"::set-output name=accepted::{approval}")
-          '
+#      - run: cat $GITHUB_EVENT_PATH
+#
+#      - uses: octokit/graphql-action@v2.x
+#        id: reviews
+#        with:
+#          query: |
+#            query ($repository: String!, $pr: Int!) {
+#              repository(owner: "python-discord", name: $repository) {
+#                pullRequest(number: $pr) {
+#                  latestOpinionatedReviews(last: 100, writersOnly: true) {
+#                    nodes{
+#                      author{
+#                        login
+#                      }
+#                      state
+#                    }
+#                  }
+#                }
+#              }
+#            }
+#          repository: bot
+#          pr: 1202
+##          repository: ${{ github.event.repository.name }}
+##          pr: ${{ github.event.pull_request.number }}
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.DISPATCH_TOKEN }}
+#
+#      - uses: octokit/graphql-action@v2.x
+#        id: core_developers
+#        with:
+#          query: |
+#            query {
+#              organization(login: "python-discord") {
+#                team(slug: "core-developers") {
+#                  members(first: 100) {
+#                    nodes {
+#                      login
+#                    }
+#                  }
+#                }
+#              }
+#            }
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.TEAM_TOKEN }}
+#
+#      - name: Setup python
+#        id: python
+#        uses: actions/setup-python@v2
+#        with:
+#          python-version: '3.9'
+#
+#      - run: |
+#          echo '${{ steps.reviews.outputs.data }}'
+#          echo '${{ steps.core_developers.outputs.data }}'
+#
+#      - name: Check for Accepting Core Developers
+#        id: core_dev_acceptance
+#        run: |
+#          python -c 'import json
+#          reviews = json.loads("""${{ steps.reviews.outputs.data }}""")
+#          reviewers = {
+#              review["author"]["login"]
+#              for review in reviews["repository"]["pullRequest"]["latestOpinionatedReviews"]["nodes"]
+#              if review["state"] == "APPROVED"
+#          }
+#          core_devs = json.loads("""${{ steps.core_developers.outputs.data }}""")
+#          core_devs = {
+#              member["login"] for member in core_devs["organization"]["team"]["members"]["nodes"]
+#          }
+#          approving_core_devs = reviewers & core_devs
+#          approval = "true" if approving_core_devs else "false"
+#          print(f"::set-output name=accepted::{approval}")
+#          '
 
       - name: List existing checks
         id: existing_checks
