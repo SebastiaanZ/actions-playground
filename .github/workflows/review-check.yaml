@@ -80,5 +80,5 @@ jobs:
           '
 
       - name: Fail workflow if no Core Developers have approved this PR
-        if: steps.core_dev_reviews.outputs.approved == "false"
+        if: steps.core_dev_reviews.outputs.approved == 'false'
         run: exit 1
