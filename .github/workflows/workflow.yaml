@@ -12,6 +12,5 @@ jobs:
 
     steps:
       - name: Greeter
-        uses: SebastiaanZ/actions-playground@main
-        with:
-          who-to-greet: Sebastiaan
+        uses: SebastiaanZ/discord-status-embed@main
+
