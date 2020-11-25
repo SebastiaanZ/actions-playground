@@ -96,7 +96,6 @@ jobs:
           sha: ${{ github.event.after }}
           state: ${{ steps.core_dev_reviews.outputs.approval_check }}
           description: At least one core developer needs to approve this PR
-          context: Core Dev Review
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -109,7 +108,6 @@ jobs:
           sha: ${{ github.event.after }}
           state: success
           description: At least one core developer needs to approve this PR
-          context: Core Dev Review
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
