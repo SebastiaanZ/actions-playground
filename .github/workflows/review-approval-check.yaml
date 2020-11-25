@@ -87,27 +87,29 @@ jobs:
           print(f"::set-output name=approval_check::{approval_check}")
           '
 
-      - name: Add "waiting for core dev approval" if no core dev has approved yet
+      - name: Add "success" status as this PR has a Core Dev Approval
         if: github.event_name == 'pull_request'
         uses: octokit/request-action@v2.x
         with:
           route: POST /repos/:repository/statuses/:sha
           repository: ${{ github.repository }}
-          sha: ${{ github.event.after }}
+          sha: ${{ github.sha }}
           state: ${{ steps.core_dev_reviews.outputs.approval_check }}
           description: At least one core developer needs to approve this PR
+          context: Core Dev Approval
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Add "waiting for core dev approval" if no core dev has approved yet
+      - name: Add "failure" status as this PR does not have a Core Dev Approval
         if: github.event_name == 'pull_request_review'
         uses: octokit/request-action@v2.x
         with:
           route: POST /repos/:repository/statuses/:sha
           repository: ${{ github.repository }}
-          sha: ${{ github.event.after }}
+          sha: ${{ github.sha }}
           state: success
           description: At least one core developer needs to approve this PR
+          context: Core Dev Approval
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
