@@ -88,7 +88,7 @@ jobs:
           '
 
       - name: Add "waiting for core dev approval" if no core dev has approved yet
-        if: github.event_name == 'pull_request_target`
+        if: github.event_name == 'pull_request_target'
         uses: octokit/request-action@v2.x
         with:
           route: /repos/:repository/statuses/:sha
@@ -101,7 +101,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Add "waiting for core dev approval" if no core dev has approved yet
-        if: github.event_name == 'pull_request_review`
+        if: github.event_name == 'pull_request_review'
         uses: octokit/request-action@v2.x
         with:
           route: /repos/:repository/statuses/:sha
