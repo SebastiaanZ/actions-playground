@@ -1,0 +1,17 @@
+name: My test workflow
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  greeter:
+    name: Greets someone
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Greeter
+        uses: SebastiaanZ/playground@main
+        with:
+          who-to-greet: Sebastiaan
