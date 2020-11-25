@@ -5,7 +5,7 @@ on:
     types:
       - submitted
       - dismissed
-  pull_request:
+  pull_request_target:
 
 
 jobs:
@@ -93,7 +93,7 @@ jobs:
         with:
           route: POST /repos/:repository/statuses/:sha
           repository: ${{ github.repository }}
-          sha: ${{ github.sha }}
+          sha: ${{ github.event.pull_request.head.sha }}
           state: ${{ steps.core_dev_reviews.outputs.approval_check }}
           description: At least one core developer needs to approve this PR
           context: Core Dev Approval
@@ -106,7 +106,7 @@ jobs:
         with:
           route: POST /repos/:repository/statuses/:sha
           repository: ${{ github.repository }}
-          sha: ${{ github.sha }}
+          sha: ${{ github.event.pull_request.head.sha }}
           state: success
           description: At least one core developer needs to approve this PR
           context: Core Dev Approval
