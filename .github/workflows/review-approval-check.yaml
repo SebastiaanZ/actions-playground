@@ -91,7 +91,7 @@ jobs:
         if: github.event_name == 'pull_request'
         uses: octokit/request-action@v2.x
         with:
-          route: /repos/:repository/statuses/:sha
+          route: POST /repos/:repository/statuses/:sha
           repository: ${{ github.repository }}
           sha: ${{ github.event.after }}
           state: ${{ steps.core_dev_reviews.outputs.approval_check }}
@@ -103,7 +103,7 @@ jobs:
         if: github.event_name == 'pull_request_review'
         uses: octokit/request-action@v2.x
         with:
-          route: /repos/:repository/statuses/:sha
+          route: POST /repos/:repository/statuses/:sha
           repository: ${{ github.repository }}
           sha: ${{ github.event.after }}
           state: success
