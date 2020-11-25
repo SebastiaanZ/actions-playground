@@ -96,7 +96,7 @@ jobs:
           route: POST /repos/:repository/statuses/:sha
           repository: ${{ github.repository }}
           sha: ${{ github.event.pull_request.head.sha }}
-          state: $${{ steps.core_dev_reviews.outputs.approval_check }}
+          state: ${{ steps.core_dev_reviews.outputs.approval_check }}
           description: At least one core developer needs to approve this PR
           context: Core Dev Approval
         env:
