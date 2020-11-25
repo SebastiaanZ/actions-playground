@@ -1,0 +1,37 @@
+name: Review Status
+
+on:
+  pull_request_target:
+    types:
+      # When a PR receives new commits, we should make sure this
+      # check runs in the check suite for that commit.
+      - opened
+      - edited
+      - synchronize
+      - reopened
+      # It's a good idea to check the labels after they've been changed.
+      - labeled
+      - unlabeled
+
+jobs:
+  waiting-for-core-dev:
+    name: At least one core developer needs to approve this PR
+    runs-on: ubuntu-latest
+
+    steps:
+      # This step simply checks if the 'waiting for core dev review' label is
+      # present on the PR and, if so, it fails the check to prevent it from
+      # being merged.
+      #
+      # While the `review-approval-check` workflow should label PRs that have
+      # just been opened, I've noticed that the `labeled` event type is not
+      # always triggered so soon after opening a PR. That's why we also explicitly
+      # fail the check after opening a PR, as we don't have reviews yet at that
+      # point.
+      - name: Fail check if "waiting for core dev review" is present
+        if: >-
+          contains(github.event.pull_request.labels.*.name, 'waiting for core dev approval') ||
+          github.event.action == 'opened'
+        run: |
+          echo 'Approving Core Dev Review not found; failing check run...'
+          exit 1

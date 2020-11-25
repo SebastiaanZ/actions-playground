@@ -6,9 +6,6 @@ on:
       - submitted
       - dismissed
   pull_request_target:
-    types:
-      - opened
-      - reopened
 
 
 jobs:
@@ -17,12 +14,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Fetch the latest Opinionated reviews from users with write
+      # access. We can't narrow it down using a specific team here
+      # yet, so we'll do that later.
       - uses: octokit/graphql-action@v2.x
         id: reviews
         with:
           query: |
             query ($repository: String!, $pr: Int!) {
-              repository(owner: "python-discord", name: $repository) {
+              repository(owner: "SebastiaanZ", name: $repository) {
                 pullRequest(number: $pr) {
                   latestOpinionatedReviews(last: 100, writersOnly: true) {
                     nodes{
@@ -35,13 +35,13 @@ jobs:
                 }
               }
             }
-          repository: bot
-          pr: 1305
-#          repository: ${{ github.event.repository.name }}
-#          pr: ${{ github.event.pull_request.number }}
+          repository: ${{ github.event.repository.name }}
+          pr: ${{ github.event.pull_request.number }}
         env:
           GITHUB_TOKEN: ${{ secrets.DISPATCH_TOKEN }}
 
+      # Fetch the members of the Core Developers team so we can
+      # check if any of them actually approved this PR.
       - uses: octokit/graphql-action@v2.x
         id: core_developers
         with:
@@ -66,6 +66,8 @@ jobs:
         with:
           python-version: '3.9'
 
+      # Use a small script to create an intersection between the
+      # approving users with write access and the core developers.
       - name: Check for Accepting Core Developers
         id: core_dev_reviews
         run: |
@@ -81,31 +83,64 @@ jobs:
               member["login"] for member in core_devs["organization"]["team"]["members"]["nodes"]
           }
           approving_core_devs = reviewers & core_devs
-          approved = "true" if approving_core_devs else "false"
-          print(f"::set-output name=approved::{approved}")
+          approval_check = "success" if approving_core_devs else "failure"
+          print(f"::set-output name=approval_check::{approval_check}")
           '
 
-      - name: Remove "waiting for core dev approval" if a core dev approved this PR
-        if: >-
-          steps.core_dev_reviews.outputs.approved == 'true' &&
-          contains(github.event.pull_request.labels.*.name, 'waiting for core dev approval')
+      - name: Add "waiting for core dev approval" if no core dev has approved yet
+        if: github.event_name == 'pull_request_target`
         uses: octokit/request-action@v2.x
         with:
-          route: DELETE /repos/:repository/issues/:number/labels/:label
+          route: /repos/:repository/statuses/:sha
           repository: ${{ github.repository }}
-          number: ${{ github.event.pull_request.number }}
-          label: waiting for core dev approval
+          sha: ${{ github.sha }}
+          state: ${{ steps.core_dev_reviews.outputs.approval_check }}
+          description: At least one core developer needs to approve this PR
+          context: Core Dev Review
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Remove "waiting for core dev approval" if a core dev approved this PR
-        if: steps.core_dev_reviews.outputs.approved == 'false'
+      - name: Add "waiting for core dev approval" if no core dev has approved yet
+        if: github.event_name == 'pull_request_review`
         uses: octokit/request-action@v2.x
         with:
-          route: POST /repos/:repository/issues/:number/labels
+          route: /repos/:repository/statuses/:sha
           repository: ${{ github.repository }}
-          number: ${{ github.event.pull_request.number }}
-          labels: |
-            - waiting for core dev approval
+          sha: ${{ github.sha }}
+          state: success
+          description: At least one core developer needs to approve this PR
+          context: Core Dev Review
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+#      # If a Core Developer has approved the PR, but we still have a label that
+#      # claims that we're waiting for a core dev approval, we'll remove the label
+#      - name: Remove "waiting for core dev approval" if a core dev approved this PR
+#        if: >-
+#          steps.core_dev_reviews.outputs.approval_check == 'success' &&
+#          contains(github.event.pull_request.labels.*.name, 'waiting for core dev approval')
+#        uses: octokit/request-action@v2.x
+#        with:
+#          route: DELETE /repos/:repository/issues/:number/labels/:label
+#          repository: ${{ github.repository }}
+#          number: ${{ github.event.pull_request.number }}
+#          label: waiting for core dev approval
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#
+#      # If we've determined that no core developer has approved this PR yet, we'll
+#      # make sure to add the 'waiting for core dev approval' label if it's not
+#      # already there.
+#      - name: Add "waiting for core dev approval" if no core dev has approved yet
+#        if: >-
+#          steps.core_dev_reviews.outputs.approval_check == 'failure' &&
+#          !contains(github.event.pull_request.labels.*.name, 'waiting for core dev approval')
+#        uses: octokit/request-action@v2.x
+#        with:
+#          route: POST /repos/:repository/issues/:number/labels
+#          repository: ${{ github.repository }}
+#          number: ${{ github.event.pull_request.number }}
+#          labels: |
+#            - waiting for core dev approval
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
