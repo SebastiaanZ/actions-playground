@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Test Docker-based action with PYTHONPATH
+      - name: Test Docker-based action with dependency
         uses: SebastiaanZ/github-status-embed-for-discord@main
         with:
           name: Sebastiaan
