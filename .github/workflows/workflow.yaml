@@ -12,6 +12,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Induced failure
+        run: exit 1
+
       - name: GitHub Actions Status Embed for Discord
         # For a `pull_request` we always want to send a status embed
         # here. For a push event, only when this workflow is the last
