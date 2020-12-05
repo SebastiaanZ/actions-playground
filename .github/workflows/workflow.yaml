@@ -12,8 +12,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Have workflow fail!
-        run: exit 1
+      - name: Give myself time to cancel this run
+        run: sleep 300
 
       - name: GitHub Actions Status Embed for Discord
         if: always()
