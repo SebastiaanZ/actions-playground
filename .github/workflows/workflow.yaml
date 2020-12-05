@@ -13,7 +13,7 @@ jobs:
 
     steps:
       - name: GitHub Actions Status Embed for Discord
-        if: github.event_name == 'pull_request' || cancelled() || failed()
+        if: github.event_name == 'pull_request' || cancelled() || failure()
         uses: SebastiaanZ/github-status-embed-for-discord@main
         with:
           # Discord webhook
