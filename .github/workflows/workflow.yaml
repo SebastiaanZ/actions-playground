@@ -12,7 +12,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Have workflow fail!
+        run: exit 1
+
       - name: GitHub Actions Status Embed for Discord
+        if: always()
         uses: SebastiaanZ/github-status-embed-for-discord@v0.1.0
         with:
           # Discord webhook
