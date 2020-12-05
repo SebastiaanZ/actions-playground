@@ -15,26 +15,26 @@ jobs:
       - name: GitHub Actions Status Embed for Discord
         uses: SebastiaanZ/github-status-embed-for-discord@v0.1.0
         with:
-        # Discord webhook
-        webhook_id: 622392658211504157
-        webhook_token: ${{ secrets.WEBHOOK_TOKEN }}
+          # Discord webhook
+          webhook_id: 622392658211504157
+          webhook_token: ${{ secrets.WEBHOOK_TOKEN }}
 
-        # Information about the current workflow
-        workflow_name: ${{ github.workflow }}
-        run_id: ${{ github.run_id }}
-        run_number: ${{ github.run_number }}
-        status: ${{ job.status }}
-        actor: ${{ github.actor }}
-        repository:  ${{ github.repository }}
-        ref: ${{ github.ref }}
-        sha: ${{ github.sha }}
+          # Information about the current workflow
+          workflow_name: ${{ github.workflow }}
+          run_id: ${{ github.run_id }}
+          run_number: ${{ github.run_number }}
+          status: ${{ job.status }}
+          actor: ${{ github.actor }}
+          repository:  ${{ github.repository }}
+          ref: ${{ github.ref }}
+          sha: ${{ github.sha }}
 
-        # Optional arguments for PR-related events
-        # Note: There's no harm in including these lines for non-PR
-        # events, as non-existing paths in objects will evaluate to
-        # `null` silently and the github status embed action will
-        # treat them as absent.
-        pr_author_login: ${{ github.event.pull_request.user.login }}
-        pr_number: ${{ github.event.pull_request.number }}
-        pr_title: ${{ github.event.pull_request.title }}
-        pr_source: ${{ github.event.pull_request.head.label }}
+          # Optional arguments for PR-related events
+          # Note: There's no harm in including these lines for non-PR
+          # events, as non-existing paths in objects will evaluate to
+          # `null` silently and the github status embed action will
+          # treat them as absent.
+          pr_author_login: ${{ github.event.pull_request.user.login }}
+          pr_number: ${{ github.event.pull_request.number }}
+          pr_title: ${{ github.event.pull_request.title }}
+          pr_source: ${{ github.event.pull_request.head.label }}
