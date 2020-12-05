@@ -12,12 +12,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Give myself time to cancel this run
-        run: sleep 300
-
       - name: GitHub Actions Status Embed for Discord
         if: always()
-        uses: SebastiaanZ/github-status-embed-for-discord@v0.1.0
+        uses: SebastiaanZ/github-status-embed-for-discord@main
         with:
           # Discord webhook
           webhook_id: '622392658211504157'
