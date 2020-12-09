@@ -16,12 +16,7 @@ jobs:
         uses: octokit/request-action@v2.0.2
         id: pull_request
         with:
-          route: GET /repos/{repository}/pulls
-          repository: ${{ github.repository }}
-          state: open
-          head: SebastiaanZ:discord-embed-test
-          sort: updated
-          direction: desc
+          route: GET /repos/SebastiaanZ/actions-playground/pulls
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
