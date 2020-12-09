@@ -30,4 +30,4 @@ jobs:
           python-version: '3.9'
           architecture: 'x64'
 
-      - run: python -c 'print("${{ toJson(steps.pull_request.outputs.data) }}")'
+      - run: python -c 'print(${{ toJson(steps.pull_request.outputs.data) }})'
