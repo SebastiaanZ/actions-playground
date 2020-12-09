@@ -19,7 +19,7 @@ jobs:
           owner: python-discord
           repo: sir-lancebot
           state: open
-          head: RohanJnr:error_handler_changes
+          head: Vthechamp22:master
           sort: updated
           direction: desc
         env:
