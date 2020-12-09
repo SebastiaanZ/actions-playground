@@ -25,9 +25,27 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: actions/setup-python@v2
+      # Send an informational status embed to Discord instead of the
+      # standard embeds that Discord sends. This embed will contain
+      # more information and we can fine tune when we actually want
+      # to send an embed.
+      - name: GitHub Actions Status Embed for Discord
+        uses: SebastiaanZ/github-status-embed-for-discord@v0.2.1
         with:
-          python-version: '3.9'
-          architecture: 'x64'
+          # Our GitHub Actions webhook
+          webhook_id: '784184528997842985'
+          webhook_token: abcdefghijklmnop
 
-      - run: python -c 'import json; print(json.loads(${{ toJson(steps.pull_request.outputs.data) }}))'
+          # Workflow information
+          workflow_name: ${{ github.event.workflow_run.name }}
+          run_id: ${{ github.event.workflow_run.id }}
+          run_number: ${{ github.event.workflow_run.run_number }}
+          status: ${{ github.event.workflow_run.conclusion }}
+          actor: ${{ github.actor }}
+          repository:  ${{ github.repository }}
+          ref: ${{ github.ref }}
+          sha: ${{ github.event.workflow_run.head_sha }}
+
+          pull_request_payload: ${{ steps.pull_request.outputs.data }}
+          dry_run: 1
+          debug: 1
