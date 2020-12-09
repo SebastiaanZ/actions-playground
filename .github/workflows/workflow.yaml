@@ -16,8 +16,7 @@ jobs:
         uses: octokit/request-action@v2.0.2
         id: pull_request
         with:
-          route: GET /repos/{repo}/pulls
-          repo: ${{ github.repository }}
+          route: GET /repos/${{ github.repository }}/pulls
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
