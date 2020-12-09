@@ -12,27 +12,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      steps:
-        - name: GitHub API Request
-          uses: octokit/request-action@v2.0.2
-          id: pull_request
-          with:
-            route: GET /repos/{repository}/pulls
-            repository: ${{ github.repository }}
-            state: open
-            head: ${{format(
-              '{0}:{1}',
-              github.event.workflow_run.head_repository.owner.login,
-              github.event.workflow_run.head_branch
-              )}}
-            sort: updated
-            direction: desc
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: GitHub API Request
+        uses: octokit/request-action@v2.0.2
+        id: pull_request
+        with:
+          route: GET /repos/{repository}/pulls
+          repository: ${{ github.repository }}
+          state: open
+          head: ${{format(
+            '{0}:{1}',
+            github.event.workflow_run.head_repository.owner.login,
+            github.event.workflow_run.head_branch
+            )}}
+          sort: updated
+          direction: desc
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-        - name: Echo output
-          run: |
-            echo '${{ fromJson(steps.pull_request.outputs.data)[0].user.login }}'
-            echo '${{ fromJson(steps.pull_request.outputs.data)[0].number }}'
-            echo '${{ fromJson(steps.pull_request.outputs.data)[0].title }}'
-            echo '${{ fromJson(steps.pull_request.outputs.data)[0].head.label }}'
+      - name: Echo output
+        run: |
+          echo '${{ fromJson(steps.pull_request.outputs.data)[0].user.login }}'
+          echo '${{ fromJson(steps.pull_request.outputs.data)[0].number }}'
+          echo '${{ fromJson(steps.pull_request.outputs.data)[0].title }}'
+          echo '${{ fromJson(steps.pull_request.outputs.data)[0].head.label }}'
