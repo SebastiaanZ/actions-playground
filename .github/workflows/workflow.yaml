@@ -36,15 +36,15 @@ jobs:
           webhook_id: '784184528997842985'
           webhook_token: abcdefghijklmnop
 
-          # Workflow information
-          workflow_name: ${{ github.event.workflow_run.name }}
-          run_id: ${{ github.event.workflow_run.id }}
-          run_number: ${{ github.event.workflow_run.run_number }}
-          status: ${{ github.event.workflow_run.conclusion }}
+          # Information about the current workflow
+          workflow_name: ${{ github.workflow }}
+          run_id: ${{ github.run_id }}
+          run_number: ${{ github.run_number }}
+          status: ${{ job.status }}
           actor: ${{ github.actor }}
           repository:  ${{ github.repository }}
           ref: ${{ github.ref }}
-          sha: ${{ github.event.workflow_run.head_sha }}
+          sha: ${{ github.sha }}
 
           pull_request_payload: ${{ steps.pull_request.outputs.data }}
           dry_run: 1
