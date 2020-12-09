@@ -17,6 +17,10 @@ jobs:
         id: pull_request
         with:
           route: GET /repos/${{ github.repository }}/pulls
+          state: open
+          head: SebastiaanZ:discord-embed-test
+          sort: updated
+          direction: desc
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
