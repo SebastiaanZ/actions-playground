@@ -26,4 +26,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - run: echo '${{ toJson(steps.pull_request.outputs.data }}'
+      - run: echo '${{ toJson(steps.pull_request.outputs.data) }}'
