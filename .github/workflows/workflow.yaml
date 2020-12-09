@@ -12,7 +12,6 @@ jobs:
 
     steps:
       - name: Get Pull Request Information
-        if: github.event.workflow_run.event == 'pull_request'
         uses: octokit/request-action@v2.0.2
         id: pull_request
         with:
