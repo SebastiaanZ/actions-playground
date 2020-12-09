@@ -25,4 +25,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - run: echo '${{ toJson(steps.pull_request.outputs.data) }}'
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+          architecture: 'x64'
+
+      - run: python -c 'print("${{ toJson(steps.pull_request.outputs.data) }}")'
