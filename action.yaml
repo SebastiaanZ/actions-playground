@@ -1,0 +1,8 @@
+name: 'Environment test'
+description: 'Test how the environment works'
+
+runs:
+  using: "composite"
+  steps:
+    - run: echo Hello ${{ toJson(github) }}.
+      shell: bash
